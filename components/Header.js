@@ -14,12 +14,15 @@ import {
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { DateRangePicker } from "react-date-range";
+import { useRouter } from "next/router";
 
-export default function Header() {
+export default function Header({ placeholder }) {
   const [searchInput, setSearchInput] = useState("");
   const [startDay, setStartDay] = useState(new Date());
   const [endDay, setEndDay] = useState(new Date());
   const [numberOfGuests, setNumberOfGuests] = useState(1);
+
+  const router = useRouter();
 
   const handleSelect = (ranges) => {
     setStartDay(ranges.selection.startDate);
@@ -30,6 +33,18 @@ export default function Header() {
     setSearchInput("");
   };
 
+  const handleSearch = () => {
+    router.push({
+      pathname: '/search',
+      query: {
+        location: searchInput,
+        startDate: startDay.toISOString(),
+        endDate: endDay.toISOString(),
+        numberOfGuests
+      }
+    })
+  }
+
   const selectionRange = {
     startDate: startDay,
     endDate: endDay,
@@ -39,7 +54,10 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md py-5 px-5 md:px-10">
       {/* left */}
-      <div className="relative flex items-center h-10 cursor-pointer">
+      <div
+        onClick={() => router.push("/")}
+        className="relative flex items-center h-10 cursor-pointer"
+      >
         <Image
           src={logoAirbnb}
           layout="fill"
@@ -54,7 +72,7 @@ export default function Header() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           type="text"
-          placeholder="Start your search"
+          placeholder={placeholder || "Start your search"}
           className="flex-grow pl-5 bg-transparent outline-none text-gray-600 placeholder-gray-400"
         />
         <MagnifyingGlassIcon className="md:mx-2 hidden md:inline-flex h-8 bg-red-400 text-white rounded-full p-1 cursor-pointer" />
@@ -94,7 +112,7 @@ export default function Header() {
             <button className="flex-grow text-gray-500" onClick={resetInput}>
               Cancel
             </button>
-            <button className="flex-grow text-red-400">Search</button>
+            <button onClick={handleSearch} className="flex-grow text-red-400">Search</button>
           </div>
         </div>
       )}
