@@ -23,7 +23,7 @@ export async function getStaticProps() {
 export default function Home(props: any) {
   return (
     <div className="">
-      <Header />
+      <Header placeholder={"Start your search"} />
       <Banner />
 
       <main className="max-w-7xl mx-auto px-8 sm:px-16">
